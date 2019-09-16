@@ -20,21 +20,6 @@ cost_default = cost_mountains
 
 def get_cost(sym):
     switcher = {
-        cost_mountains: sym_mountains,
-        cost_water: sym_water,
-        cost_traffic_jam: sym_traffic_jam,
-        cost_dirt: sym_dirt,
-        cost_railway_level_crossing: sym_railway_level_crossing,
-        cost_standard_terrain: sym_standard_terrain,
-        cost_highway: sym_highway,
-        cost_railway: sym_railway
-    }
-
-    return switcher.get(sym, None)
-
-
-def get_sym(cost):
-    switcher = {
         sym_mountains: cost_mountains,
         sym_water: cost_water,
         sym_traffic_jam: cost_traffic_jam,
@@ -43,6 +28,21 @@ def get_sym(cost):
         sym_standard_terrain: cost_standard_terrain,
         sym_highway: cost_highway,
         sym_railway: cost_railway
+    }
+
+    return switcher.get(sym, None)
+
+
+def get_sym(cost):
+    switcher = {
+        cost_mountains: sym_mountains,
+        cost_water: sym_water,
+        cost_traffic_jam: sym_traffic_jam,
+        cost_dirt: sym_dirt,
+        cost_railway_level_crossing: sym_railway_level_crossing,
+        cost_standard_terrain: sym_standard_terrain,
+        cost_highway: sym_highway,
+        cost_railway: sym_railway
     }
 
     return switcher.get(cost, None)
