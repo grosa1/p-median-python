@@ -8,10 +8,11 @@ from time import time
 def simulated_annealing(sol, offices, customers, verbose=True):
     start_time = time()
 
-    old_cost = evaluate_sol(sol, offices, customers)
+    old_cost, built_offices = evaluate_sol(sol, offices, customers)
     if verbose:
-        print_sol(sol, old_cost)
+        print_sol(sol, old_cost, built_offices)
 
+    sol_built_offices = 0
     temp = 1.0
     temp_min = 0.00001
     alpha = 0.9
@@ -19,19 +20,20 @@ def simulated_annealing(sol, offices, customers, verbose=True):
         i = 1
         while i <= 100:
             new_sol = get_rand_neighbor2(sol, offices)
-            new_cost = evaluate_sol(new_sol, offices, customers)
+            new_cost, built_offices = evaluate_sol(new_sol, offices, customers)
             ap = acceptance_probability(old_cost, new_cost, temp)
             if ap > r.random():
                 sol = new_sol
                 old_cost = new_cost
+                sol_built_offices = built_offices
                 if verbose:
-                    print_sol(new_sol, new_cost)
+                    print_sol(new_sol, new_cost, built_offices)
             i += 1
         temp = temp * alpha
 
     elapsed_time = time() - start_time
 
-    return sol, old_cost, elapsed_time
+    return sol, old_cost, sol_built_offices, elapsed_time
 
 
 def get_rand_neighbor(sol, offices, area=10):
@@ -62,12 +64,16 @@ def evaluate_sol(offices_id, offices, customers):
     for index in offices_id:
         offices_sol.append(offices[index])
 
-    for c in customers:
-        o = NodeUtils.closest_node(c, offices_sol)
-        tot_dist += NodeUtils.euclidean_dist(o, c) + offices[index].value
-        tot_reward += c.value
+    built_offices = list()
+    for customer in customers:
+        office = NodeUtils.closest_node(customer, offices_sol)
+        tot_dist += NodeUtils.euclidean_dist(office, customer) + offices[index].value
+        tot_reward += customer.value
 
-    return tot_reward - int(tot_dist)
+        if office not in built_offices:
+            built_offices.append(office)
+
+    return tot_reward - int(tot_dist), len(built_offices)
 
 
 def acceptance_probability(old_cost, new_cost, T):
@@ -77,10 +83,11 @@ def acceptance_probability(old_cost, new_cost, T):
         return float('inf')
 
 
-def print_sol(solution, cost):
-    print('### NEW SOLUTION ###')
+def print_sol(solution, cost, built_offices):
+    print('### SOLUTION ###')
     print('cost: ' + str(cost))
     print(*solution)
+    print("built offices: " + str(built_offices))
     print()
 
 

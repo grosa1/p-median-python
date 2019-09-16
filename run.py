@@ -41,8 +41,8 @@ def main(input_file):
     for office_sol in initial_sol:
         solution.append(office_sol.office.index)
 
-    [sol, cost, sa_time] = sa.simulated_annealing(solution, offices_list, customers_list, verbose=False)
-    print_sa_sol(sol, cost)
+    [sol, cost, built_offices, sa_time] = sa.simulated_annealing(solution, offices_list, customers_list, verbose=False)
+    sa.print_sol(sol, cost, built_offices)
     print("total time (s): " + str(kmeans_time + sa_time))
 
 
@@ -82,14 +82,6 @@ def k_means(data_points, n_centroids, tot_iteration=100):
     # kmeans.print_label_data([cluster_label, new_centroids])
 
     return [cluster_label, new_centroids]
-
-
-def print_sa_sol(solution, cost):
-    print('### SA Final Solution ###')
-    print('cost: ' + str(cost))
-    print(*solution)
-    print()
-
 
 # def compute_initial_sol_value(solution, dist_mat, customers):
 #     tot_dist = 0
