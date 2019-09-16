@@ -6,6 +6,7 @@ from Node import Node
 from OfficeSolution import OfficeSolution
 import NodeUtils
 import SimulatedAnnealing as sa
+from time import time
 
 
 def main(input_file):
@@ -24,20 +25,25 @@ def main(input_file):
                 offices_list.append(office)
                 office_index += 1
 
-    dist_matrix = NodeUtils.distance_matrix(offices_list, customers_list)
+    # dist_matrix = NodeUtils.distance_matrix(offices_list, customers_list)
 
     data_points = list()
     for c in customers_list:
         data_points.append([c.x, c.y])
 
+    kmeans_time = time()
     initial_sol = gen_initial_solution(data_points, offices_list, customers_list, input_data.num_max_offices)
-    print(str(compute_sol_value(initial_sol, dist_matrix, customers_list)))
+    # print(str(compute_initial_sol_value(initial_sol, dist_matrix, customers_list)))
+
+    kmeans_time = time() - kmeans_time
 
     solution = list()
     for office_sol in initial_sol:
         solution.append(office_sol.office.index)
 
-    sa.simulated_annealing(solution, offices_list, customers_list)
+    [sol, cost, sa_time] = sa.simulated_annealing(solution, offices_list, customers_list, verbose=False)
+    print_sa_sol(sol, cost)
+    print("total time (s): " + str(kmeans_time + sa_time))
 
 
 def gen_initial_solution(data_points, offices, customers, n_offices):
@@ -78,15 +84,22 @@ def k_means(data_points, n_centroids, tot_iteration=100):
     return [cluster_label, new_centroids]
 
 
-def compute_sol_value(solution, dist_mat, customers):
-    tot_dist = 0
-    tot_reward = 0
-    for s in solution:
-        for c in s.customers_id:
-            tot_dist += dist_mat[s.office.index][c] + s.office.value
-            tot_reward += customers[c].value
+def print_sa_sol(solution, cost):
+    print('### SA Final Solution ###')
+    print('cost: ' + str(cost))
+    print(*solution)
+    print()
 
-    return tot_reward - int(tot_dist)
+
+# def compute_initial_sol_value(solution, dist_mat, customers):
+#     tot_dist = 0
+#     tot_reward = 0
+#     for s in solution:
+#         for c in s.customers_id:
+#             tot_dist += dist_mat[s.office.index][c] + s.office.value
+#             tot_reward += customers[c].value
+#
+#     return tot_reward - int(tot_dist)
 
 
 if __name__ == '__main__':
