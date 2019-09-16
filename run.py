@@ -3,7 +3,6 @@ import KMeansClustering as kmeans
 import InputReader
 import Terrain
 from Node import Node
-from OfficeSolution import OfficeSolution
 import NodeUtils
 import SimulatedAnnealing as sa
 from time import time
@@ -38,8 +37,8 @@ def main(input_file):
     kmeans_time = time() - kmeans_time
 
     solution = list()
-    for office_sol in initial_sol:
-        solution.append(office_sol.office.index)
+    for sol in initial_sol:
+        solution.append(sol.office.index)
 
     [sol, cost, built_offices, sa_time] = sa.simulated_annealing(solution, offices_list, customers_list, verbose=False)
     sa.print_sol(sol, cost, built_offices)
@@ -67,7 +66,7 @@ def gen_initial_solution(data_points, offices, customers, n_offices):
             customers_id.append(cust.index)
             office = NodeUtils.closest_node(Node(None, elem[2][0], elem[2][1], None), offices)
 
-        office_sol = OfficeSolution()
+        office_sol = InitialSolution()
         office_sol.office = office
         office_sol.customers_id = customers_id
 
@@ -92,6 +91,12 @@ def k_means(data_points, n_centroids, tot_iteration=100):
 #             tot_reward += customers[c].value
 #
 #     return tot_reward - int(tot_dist)
+
+
+class InitialSolution:
+    def __init__(self):
+        self.office = None
+        self.customers_id = list()
 
 
 if __name__ == '__main__':

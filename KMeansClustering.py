@@ -76,7 +76,7 @@ def gen_rand_points(max_x, max_y, num_points):
         
 
 if __name__ == "__main__":
-    filename = "C:\\Users\\giova\\Desktop\\git\\Simple-k-Means-Clustering-Python-master\\Simple-k-Means-Clustering-Python-master\\data2.csv"
+    filename = "data2.csv"
     data_points = np.genfromtxt(filename, delimiter=",")
 
     centroids = create_centroids(data_points, 8)
